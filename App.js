@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, Button } from 'react-native';
 import { Accelerometer } from 'expo';
+import DeviceMotionData from './components/DeviceMotionData';
 
 export default class App extends React.Component {
     
@@ -43,6 +44,7 @@ export default class App extends React.Component {
                 <StatusBar hidden />
             
                 <View style={[styles.generatedColor, {backgroundColor: this.state.randomColor}]}>
+                    <DeviceMotionData />
                 </View>
             
                 <View style={styles.currentColor}>

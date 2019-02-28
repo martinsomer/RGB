@@ -60,7 +60,7 @@ export default class App extends React.Component {
                 
                 </View>
                 
-                <DeviceMotionData randomColorR={this.state.randomColorR}randomColorG={this.state.randomColorG} randomColorB={this.state.randomColorB}
+                <DeviceMotionData randomColorR={this.state.randomColorR}randomColorG={this.state.randomColorG} randomColorB={this.state.randomColorB} getRandomColor = {this.getRandomColor}
                 >
                     <DeviceMotionData/>
                     

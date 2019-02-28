@@ -15,12 +15,19 @@ export default class DeviceMotionData extends React.Component {
         super(props);
         this.state = {
             deviceMotionData: {},
+            
         };
     }
-    
+    newRandColor=()=>{
+        if(percentage(this.props.randomColorR,this.props.randomColorG,this.props.randomColorB,getRed(gamma),getGreen(beta),getBlue(alpha))>75
+        ){
+            this.props.getRandomColor();
+        }
+    }
     // Subscribe to sensor data on component load
     componentDidMount() {
         this._subscribe();
+        
     }
     
     // Add listener to sensor and save the values in the state
@@ -38,23 +45,26 @@ export default class DeviceMotionData extends React.Component {
     render() {
         let { alpha, beta, gamma } = this.state.deviceMotionData;
         let currentColor = "rgb("+getRed(gamma)+","+getGreen(beta)+","+getBlue(alpha)+")";
+        
         return (
             
             <View style={[styles.currentColor, {backgroundColor: currentColor}]}>
                     
-                  
+                
                 <Text>R: {getRed(gamma)}</Text>
                 <Text>G: {getGreen(beta)}</Text>
                 <Text>B: {getBlue(alpha)}</Text>
                 {/* <Text>R: {this.props.randomColorR}</Text>
                 <Text>G: {this.props.randomColorG}</Text>
                 <Text>B: {this.props.randomColorB}</Text> */}
-                 <Text style={styles.percent }> {percentage(this.props.randomColorR,this.props.randomColorG,this.props.randomColorB,getRed(gamma),getGreen(beta),getBlue(alpha) )}%</Text> 
+                 <Text style={styles.percent }> {
+                     percentage(this.props.randomColorR,this.props.randomColorG,this.props.randomColorB,getRed(gamma),getGreen(beta),getBlue(alpha)) }%</Text> 
             </View> 
         );
+        this.newRandColor();
     }
-}
-function percentage(red, green, blue, R, G, B){
+} /* calculates percent */
+function percentage (red, green, blue, R, G, B , getRandomcolor){
     let percent;
     let redP = red-R ;
     redP = redP < 0 ?redP * -1 : redP;
@@ -63,10 +73,11 @@ function percentage(red, green, blue, R, G, B){
     let blueP = blue-B;
     blueP = blueP < 0 ?blueP * -1 : blueP;
     percent = Math.floor(((100 - ((redP * (100/360)) + (greenP * (100/360)) + (blueP * (100/360))) / 3) - 29) / 71 * 102);
-    
    
-return(percent)
+    return(percent)
+
 }
+
 // Inspired by official Expo documentation
 function round(n) {
     if (!n) {

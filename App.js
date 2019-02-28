@@ -11,6 +11,8 @@ export default class App extends React.Component {
         this.state = {
             randomColor: null,
             currentColor: null,
+            percent : null,
+            
         };
     }
     
@@ -37,11 +39,14 @@ export default class App extends React.Component {
             randomColorR: randomColorR,
             randomColorG: randomColorG,
             randomColorB: randomColorB,
+           
+            
         });
     }
     
     // Render the app screen
     render() {
+        
         return (
             // This is the main view, put elements inside this
             <View style={styles.container}>
@@ -55,7 +60,8 @@ export default class App extends React.Component {
                 
                 </View>
                 
-                <DeviceMotionData randomColorR={this.state.randomColorR}randomColorG={this.state.randomColorG} randomColorB={this.state.randomColorB}>
+                <DeviceMotionData randomColorR={this.state.randomColorR}randomColorG={this.state.randomColorG} randomColorB={this.state.randomColorB}
+                >
                     <DeviceMotionData/>
                     
                     
@@ -65,7 +71,7 @@ export default class App extends React.Component {
                 <View style={styles.percentageLayer}>
                     <View style={styles.percentageBox}>
                         <Text style={styles.percentageText}>
-                            X
+                          II
                         </Text>
                     </View>
                 </View>

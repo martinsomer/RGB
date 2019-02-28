@@ -42,19 +42,30 @@ export default class DeviceMotionData extends React.Component {
             
             <View style={[styles.currentColor, {backgroundColor: currentColor}]}>
                     
-           
+                  
                 <Text>R: {getRed(gamma)}</Text>
                 <Text>G: {getGreen(beta)}</Text>
                 <Text>B: {getBlue(alpha)}</Text>
-                <Text>R: {this.props.randomColorR}</Text>
+                {/* <Text>R: {this.props.randomColorR}</Text>
                 <Text>G: {this.props.randomColorG}</Text>
-                <Text>B: {this.props.randomColorB}</Text>
+                <Text>B: {this.props.randomColorB}</Text> */}
+                 <Text style={styles.percent }> {percentage(this.props.randomColorR,this.props.randomColorG,this.props.randomColorB,getRed(gamma),getGreen(beta),getBlue(alpha) )}%</Text> 
             </View> 
         );
     }
 }
-function percentage(){
+function percentage(red, green, blue, R, G, B){
+    let percent;
+    let redP = red-R ;
+    redP = redP < 0 ?redP * -1 : redP;
+    let greenP = green-G ;
+    greenP = greenP < 0 ?greenP * -1 : greenP;
+    let blueP = blue-B;
+    blueP = blueP < 0 ?blueP * -1 : blueP;
+    percent = Math.floor(((100 - ((redP * (100/360)) + (greenP * (100/360)) + (blueP * (100/360))) / 3) - 29) / 71 * 102);
     
+   
+return(percent)
 }
 // Inspired by official Expo documentation
 function round(n) {
@@ -159,6 +170,12 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         borderWidth: 6,
         borderTopWidth: 3,
+    },
+    percent: {
+        fontSize: 180,
+       
+        color: 'rgba(255,255,255,0.54)',
+        
     },
     
 });

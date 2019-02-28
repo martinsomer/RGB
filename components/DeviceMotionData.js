@@ -7,75 +7,73 @@ let offset = null;
 let thresholdL = null;
 let thresholdR = null;
 
-
 export default class DeviceMotionData extends React.Component {
     
     // State for holding device rotation values
     constructor(props) {
         super(props);
         this.state = {
-            deviceMotionData: {},
-            
+            red: null,
+            green: null,
+            blue: null,
+            percent: null,
         };
     }
-    newRandColor=()=>{
-        if(percentage(this.props.randomColorR,this.props.randomColorG,this.props.randomColorB,getRed(gamma),getGreen(beta),getBlue(alpha))>75
-        ){
-            this.props.getRandomColor();
-        }
-    }
+    
     // Subscribe to sensor data on component load
     componentDidMount() {
         this._subscribe();
-        
     }
     
     // Add listener to sensor and save the values in the state
     _subscribe() {
         DangerZone.DeviceMotion.addListener((deviceMotionData) => {
+            let { alpha, beta, gamma } = deviceMotionData.rotation;
+            
+            // Calculate colors and percentage
+            let red = getRed(gamma);
+            let green = getGreen(beta);
+            let blue = getBlue(alpha);
+            let percentage = getPercentage(this.props.randomColorR, this.props.randomColorG, this.props.randomColorB, red, green, blue);
+            
+            // Save the values
             this.setState({
-                deviceMotionData: deviceMotionData.rotation,
+                red: red,
+                green: green,
+                blue: blue,
+                percent: percentage,
             });
+            
+            // Check if percentage is close enough
+            if (percentage >= 97) this.props.getRandomColor();
         });
     }
     
-    // Get values from the state, calculate RGB and
-    // pass to parent component as a View
-    // TO-DO: PASS VALUES AS INT, NOT VIEW
+    // Get values from the state and pass to parent component as View
     render() {
-        let { alpha, beta, gamma } = this.state.deviceMotionData;
-        let currentColor = "rgb("+getRed(gamma)+","+getGreen(beta)+","+getBlue(alpha)+")";
+        let currentColor = "rgb(" + this.state.red + "," + this.state.green + "," + this.state.blue + ")";
         
         return (
-            
             <View style={[styles.currentColor, {backgroundColor: currentColor}]}>
-                    
-                
-                <Text>R: {getRed(gamma)}</Text>
-                <Text>G: {getGreen(beta)}</Text>
-                <Text>B: {getBlue(alpha)}</Text>
-                {/* <Text>R: {this.props.randomColorR}</Text>
-                <Text>G: {this.props.randomColorG}</Text>
-                <Text>B: {this.props.randomColorB}</Text> */}
-                 <Text style={styles.percent }> {
-                     percentage(this.props.randomColorR,this.props.randomColorG,this.props.randomColorB,getRed(gamma),getGreen(beta),getBlue(alpha)) }%</Text> 
-            </View> 
+                <Text>R: {this.state.red}</Text>
+                <Text>G: {this.state.green}</Text>
+                <Text>B: {this.state.blue}</Text>
+                <Text style={styles.percent}>{this.state.percent}%</Text>
+            </View>
         );
-        this.newRandColor();
     }
-} /* calculates percent */
-function percentage (red, green, blue, R, G, B , getRandomcolor){
-    let percent;
-    let redP = red-R ;
-    redP = redP < 0 ?redP * -1 : redP;
-    let greenP = green-G ;
-    greenP = greenP < 0 ?greenP * -1 : greenP;
-    let blueP = blue-B;
-    blueP = blueP < 0 ?blueP * -1 : blueP;
-    percent = Math.floor(((100 - ((redP * (100/360)) + (greenP * (100/360)) + (blueP * (100/360))) / 3) - 29) / 71 * 102);
-   
-    return(percent)
+}
 
+// Calculates percent
+function getPercentage (red, green, blue, R, G, B, getRandomcolor) {
+    let redP = red-R;
+    redP = redP < 0 ? redP * -1 : redP;
+    let greenP = green-G ;
+    greenP = greenP < 0 ? greenP * -1 : greenP;
+    let blueP = blue-B;
+    blueP = blueP < 0 ? blueP * -1 : blueP;
+    
+    return Math.floor(((100 - ((redP * (100/360)) + (greenP * (100/360)) + (blueP * (100/360))) / 3) - 29) / 71 * 102);
 }
 
 // Inspired by official Expo documentation
@@ -89,7 +87,7 @@ function round(n) {
 // Normalization formula ispired by
 // https://docs.tibco.com/pub/spotfire/7.0.0/doc/html/norm/norm_scale_between_0_and_1.htm
 function normalize(min, max, angle) {
-    return normalisedAngle = Math.floor(((angle - min) / (max - min)) * 255);
+    return Math.floor(((angle - min) / (max - min)) * 255);
 }
 
 // Calculate the value of RED
@@ -137,7 +135,7 @@ function getBlue(angle) {
     // Reverse the axis to go from negative to positive
     angle = round(angle) * -1;
     
-    // Check if the initial rotation is not saved
+    // Check if the initial rotation is not yet saved
     // and sensors are initalized
     // If not, save initial, minimum and maximum values of Gamma
     if (offset === null && angle != 0) {
@@ -171,22 +169,20 @@ function getBlue(angle) {
     
     return colorBlue;
 }
+
 // Stylesheet
 const styles = StyleSheet.create({
-    
     // Box for current color
     currentColor: {
         flex: 1,
-       
         borderColor: 'white',
         borderWidth: 6,
         borderTopWidth: 3,
     },
+    // Percentage text at the bottom
     percent: {
         fontSize: 180,
-       
         color: 'rgba(153,153,153,0.54)',
-        
     },
     
 });

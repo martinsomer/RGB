@@ -11,7 +11,7 @@ export default class App extends React.Component {
         this.state = {
             randomColor: null,
             currentColor: null,
-            percent : null,
+            percent: null,
             
         };
     }
@@ -26,25 +26,17 @@ export default class App extends React.Component {
         let randomColorR = Math.floor(Math.random() * (255 + 1))
         let randomColorG = Math.floor(Math.random() * (255 + 1))
         let randomColorB = Math.floor(Math.random() * (255 + 1))
-        let randomColorRGB = "rgb("+randomColorR+","+randomColorG+","+randomColorB+")";
-        
-        let randomColorHex =
-            "#" +
-            ("00" + randomColorR.toString(16)).slice(-2) +
-            ("00" + randomColorG.toString(16)).slice(-2) +
-            ("00" + randomColorB.toString(16)).slice(-2)
+        let randomColorRGB = "rgb(" + randomColorR + "," + randomColorG + "," + randomColorB + ")";
         
         this.setState({
             randomColor: randomColorRGB,
             randomColorR: randomColorR,
             randomColorG: randomColorG,
             randomColorB: randomColorB,
-           
-            
         });
     }
     
-    // Render the app screen
+    // Render the app
     render() {
         
         return (
@@ -54,18 +46,17 @@ export default class App extends React.Component {
                 <StatusBar hidden />
             
                 <View style={[styles.generatedColor, {backgroundColor: this.state.randomColor}]}>
-                <Text>R: {this.state.randomColorR}</Text>
-                <Text>G: {this.state.randomColorG}</Text>
-                <Text>B: {this.state.randomColorB}</Text>
-                
+                    <Text>R: {this.state.randomColorR}</Text>
+                    <Text>G: {this.state.randomColorG}</Text>
+                    <Text>B: {this.state.randomColorB}</Text>
                 </View>
                 
-                <DeviceMotionData randomColorR={this.state.randomColorR}randomColorG={this.state.randomColorG} randomColorB={this.state.randomColorB} getRandomColor = {this.getRandomColor}
-                >
-                    <DeviceMotionData/>
-                    
-                    
-                </DeviceMotionData >
+                <DeviceMotionData
+                    randomColorR={this.state.randomColorR}
+                    randomColorG={this.state.randomColorG}
+                    randomColorB={this.state.randomColorB}
+                    getRandomColor={this.getRandomColor} >
+                </DeviceMotionData>
                 
             
                 <View style={styles.percentageLayer}>

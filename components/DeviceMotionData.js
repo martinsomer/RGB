@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     percent: {
         fontSize: 180,
        
-        color: 'rgba(255,255,255,0.54)',
+        color: 'rgba(153,153,153,0.54)',
         
     },
     

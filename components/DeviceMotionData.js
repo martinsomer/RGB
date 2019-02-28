@@ -1,11 +1,12 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet ,Text, View } from 'react-native';
 import { DangerZone } from 'expo';
 
 // Save the initial device rotation
 let offset = null;
 let thresholdL = null;
 let thresholdR = null;
+
 
 export default class DeviceMotionData extends React.Component {
     
@@ -36,17 +37,25 @@ export default class DeviceMotionData extends React.Component {
     // TO-DO: PASS VALUES AS INT, NOT VIEW
     render() {
         let { alpha, beta, gamma } = this.state.deviceMotionData;
-
+        let currentColor = "rgb("+getRed(gamma)+","+getGreen(beta)+","+getBlue(alpha)+")";
         return (
-            <View>
+            
+            <View style={[styles.currentColor, {backgroundColor: currentColor}]}>
+                    
+           
                 <Text>R: {getRed(gamma)}</Text>
                 <Text>G: {getGreen(beta)}</Text>
                 <Text>B: {getBlue(alpha)}</Text>
-            </View>
+                <Text>R: {this.props.randomColorR}</Text>
+                <Text>G: {this.props.randomColorG}</Text>
+                <Text>B: {this.props.randomColorB}</Text>
+            </View> 
         );
     }
 }
-
+function percentage(){
+    
+}
 // Inspired by official Expo documentation
 function round(n) {
     if (!n) {
@@ -140,3 +149,16 @@ function getBlue(angle) {
     
     return colorBlue;
 }
+// Stylesheet
+const styles = StyleSheet.create({
+    
+    // Box for current color
+    currentColor: {
+        flex: 1,
+       
+        borderColor: 'white',
+        borderWidth: 6,
+        borderTopWidth: 3,
+    },
+    
+});

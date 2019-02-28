@@ -24,6 +24,8 @@ export default class App extends React.Component {
         let randomColorR = Math.floor(Math.random() * (255 + 1))
         let randomColorG = Math.floor(Math.random() * (255 + 1))
         let randomColorB = Math.floor(Math.random() * (255 + 1))
+        let randomColorRGB = "rgb("+randomColorR+","+randomColorG+","+randomColorB+")";
+        
         let randomColorHex =
             "#" +
             ("00" + randomColorR.toString(16)).slice(-2) +
@@ -31,7 +33,10 @@ export default class App extends React.Component {
             ("00" + randomColorB.toString(16)).slice(-2)
         
         this.setState({
-            randomColor: randomColorHex,
+            randomColor: randomColorRGB,
+            randomColorR: randomColorR,
+            randomColorG: randomColorG,
+            randomColorB: randomColorB,
         });
     }
     
@@ -44,11 +49,18 @@ export default class App extends React.Component {
                 <StatusBar hidden />
             
                 <View style={[styles.generatedColor, {backgroundColor: this.state.randomColor}]}>
-                    <DeviceMotionData />
+                <Text>R: {this.state.randomColorR}</Text>
+                <Text>G: {this.state.randomColorG}</Text>
+                <Text>B: {this.state.randomColorB}</Text>
+                
                 </View>
-            
-                <View style={styles.currentColor}>
-                </View>
+                
+                <DeviceMotionData randomColorR={this.state.randomColorR}randomColorG={this.state.randomColorG} randomColorB={this.state.randomColorB}>
+                    <DeviceMotionData/>
+                    
+                    
+                </DeviceMotionData >
+                
             
                 <View style={styles.percentageLayer}>
                     <View style={styles.percentageBox}>
@@ -77,7 +89,7 @@ const styles = StyleSheet.create({
     // Box for current color
     currentColor: {
         flex: 1,
-        backgroundColor: 'blue',
+       
         borderColor: 'white',
         borderWidth: 6,
         borderTopWidth: 3,

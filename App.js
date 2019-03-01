@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, Button } from 'react-native';
-import { Accelerometer } from 'expo';
+import { Accelerometer, Audio } from 'expo';
 import DeviceMotionData from './components/DeviceMotionData';
 
 export default class App extends React.Component {
@@ -8,6 +8,7 @@ export default class App extends React.Component {
     // State for holding the values of random and current color
     constructor(props) {
         super(props);
+        this.audioPlayer = new Audio.Sound();
         this.state = {
             randomColor: null,
             currentColor: null,
@@ -35,12 +36,26 @@ export default class App extends React.Component {
         });
     }
     
+    // Inspired by https://stackoverflow.com/questions/50292035
+    playScoreSound = async () => {
+        try {
+            await this.audioPlayer.unloadAsync()
+            await this.audioPlayer.loadAsync(require("./sounds/score.wav"));
+            await this.audioPlayer.playAsync();
+        } catch (err) {
+            console.warn("Couldn't Play audio", err)
+        }
+    }
+    
+    // Get percentage value from DeviceMotionData component
     handlePercentageChange = (value) => {
         if (value > 99) {
             value -= 1;
+            this.playScoreSound();
             this.getRandomColor();
         }
         
+        // Save to state
         this.setState({
            percent: value,
         });

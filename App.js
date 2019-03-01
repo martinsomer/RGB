@@ -12,7 +12,6 @@ export default class App extends React.Component {
             randomColor: null,
             currentColor: null,
             percent: null,
-            
         };
     }
     
@@ -22,7 +21,7 @@ export default class App extends React.Component {
     }
     
     // Generate random color and save it in the state
-    getRandomColor = () => {
+    getRandomColor() {
         let randomColorR = Math.floor(Math.random() * (255 + 1))
         let randomColorG = Math.floor(Math.random() * (255 + 1))
         let randomColorB = Math.floor(Math.random() * (255 + 1))
@@ -36,9 +35,19 @@ export default class App extends React.Component {
         });
     }
     
+    handlePercentageChange = (value) => {
+        if (value > 99) {
+            value -= 1;
+            this.getRandomColor();
+        }
+        
+        this.setState({
+           percent: value,
+        });
+    }
+    
     // Render the app
     render() {
-        
         return (
             // This is the main view, put elements inside this
             <View style={styles.container}>
@@ -55,14 +64,14 @@ export default class App extends React.Component {
                     randomColorR={this.state.randomColorR}
                     randomColorG={this.state.randomColorG}
                     randomColorB={this.state.randomColorB}
-                    getRandomColor={this.getRandomColor} >
+                    onPercentageChange= {this.handlePercentageChange}>
                 </DeviceMotionData>
                 
             
                 <View style={styles.percentageLayer}>
                     <View style={styles.percentageBox}>
                         <Text style={styles.percentageText}>
-                          II
+                            {this.state.percent}%
                         </Text>
                     </View>
                 </View>
@@ -114,6 +123,6 @@ const styles = StyleSheet.create({
     },
     // Text inside the percentage box
     percentageText: {
-        fontSize: 50,
+        fontSize: 45,
     },
 });

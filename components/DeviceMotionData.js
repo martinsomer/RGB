@@ -44,8 +44,8 @@ export default class DeviceMotionData extends React.Component {
                 percent: percentage,
             });
             
-            // Check if percentage is close enough
-            if (percentage >= 97) this.props.getRandomColor();
+            // Send the percentage value back to parent component
+            this.props.onPercentageChange(percentage);
         });
     }
     
@@ -58,7 +58,6 @@ export default class DeviceMotionData extends React.Component {
                 <Text>R: {this.state.red}</Text>
                 <Text>G: {this.state.green}</Text>
                 <Text>B: {this.state.blue}</Text>
-                <Text style={styles.percent}>{this.state.percent}%</Text>
             </View>
         );
     }
@@ -179,10 +178,4 @@ const styles = StyleSheet.create({
         borderWidth: 6,
         borderTopWidth: 3,
     },
-    // Percentage text at the bottom
-    percent: {
-        fontSize: 180,
-        color: 'rgba(153,153,153,0.54)',
-    },
-    
 });

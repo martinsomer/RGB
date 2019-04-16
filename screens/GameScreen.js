@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, Button } from 'react-native';
-import { Accelerometer, Audio } from 'expo';
+import { Audio } from 'expo';
 import DeviceMotionData from '../components/DeviceMotionData';
 
 export default class App extends React.Component {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, Button } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, Image } from 'react-native';
 import { Audio } from 'expo';
 import DeviceMotionData from '../components/DeviceMotionData';
 
@@ -60,6 +60,17 @@ export default class App extends React.Component {
            percent: value,
         });
     }
+
+    backButtonPressed = async () => {
+        try {
+            await this.audioPlayer.unloadAsync()
+            await this.audioPlayer.loadAsync(require("../sounds/pop.mp3"));
+            await this.audioPlayer.playAsync();
+        } catch (err) {
+            console.warn("Couldn't Play audio", err)
+        }
+        this.props.navigation.navigate('MainMenu');
+    }
     
     // Render the app
     render() {
@@ -68,6 +79,13 @@ export default class App extends React.Component {
             <View style={styles.container}>
             
                 <StatusBar hidden />
+
+                <View style={styles.topRow}>
+                    <TouchableOpacity style={styles.topRowButton} onPress={() => this.backButtonPressed()}>
+                        <Image style={styles.topRowButtonImage} source={require('../images/back96.png')} />
+                    </TouchableOpacity>
+                    <Text style={styles.topRowScore}>SCORE: 12</Text>
+                </View>
             
                 <View style={[styles.generatedColor, {backgroundColor: this.state.randomColor}]}>
                     <Text>R: {this.state.randomColorR}</Text>
@@ -88,8 +106,11 @@ export default class App extends React.Component {
                         <Text style={styles.percentageText}>
                             {this.state.percent}%
                         </Text>
-                        <Button title="Menu" onPress={() => this.props.navigation.navigate('MainMenu')} />
                     </View>
+                </View>
+
+                <View style={styles.bottomRow}>
+                    
                 </View>
             </View>
         );
@@ -120,8 +141,10 @@ const styles = StyleSheet.create({
     // This layer sits on top of both color Views
     percentageLayer: {
         flex: 1,
-        width: '100%',
-        height: '100%',
+        // width: '100%',
+        // height: '100%',
+        top: '42%',
+        left: '37%',
         position: 'absolute',
         
         // Center the percentage box
@@ -141,4 +164,44 @@ const styles = StyleSheet.create({
     percentageText: {
         fontSize: 45,
     },
+    // Containing button to menu and score
+    topRow: {
+        flex: .1,
+        flexDirection: 'row',
+        borderColor: 'white',
+        borderWidth: 6,
+        borderBottomWidth: 0,
+    },
+    // Containing time left for game
+    bottomRow: {
+        flex: .1,
+        justifyContent: 'center',
+        borderColor: 'white',
+        borderWidth: 6,
+        borderTopWidth: 0,
+    },
+    topRowScore: {
+        flex: 1, 
+        textAlign: 'right', 
+        alignSelf: 'center',
+        fontWeight: 'bold'
+    },
+    // TouchableOpacity with image
+    topRowButton: {
+        flex: 1, 
+        alignItems: 'flex-start',
+        borderRadius: 10
+    },
+    topRowButtonImage: {
+        resizeMode: 'contain',
+        flex: 1,
+        width: '20%',
+        backgroundColor: '#efefef',
+        borderRadius: 7, //works only on iOS
+        // Shadows work only on iOS
+        // shadowOffset: { width: 5, height: 5 },
+        // shadowColor: '#BDBDBD',
+        // shadowOpacity: 1,
+        // shadowRadius: 1,
+    }
 });

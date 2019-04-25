@@ -141,10 +141,10 @@ const styles = StyleSheet.create({
     // This layer sits on top of both color Views
     percentageLayer: {
         flex: 1,
-        // width: '100%',
-        // height: '100%',
-        top: '42%',
-        left: '37%',
+        width: '100%',
+        height: '100%',
+        //top: '42%',
+        //left: '37%',
         position: 'absolute',
         
         // Center the percentage box

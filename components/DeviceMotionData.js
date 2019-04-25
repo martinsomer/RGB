@@ -25,27 +25,40 @@ export default class DeviceMotionData extends React.Component {
         this._subscribe();
     }
     
+    // Unsubscribe on component unmount
+    componentWillUnmount() {
+        DangerZone.DeviceMotion.removeAllListeners();
+    }
+    
     // Add listener to sensor and save the values in the state
     _subscribe() {
         DangerZone.DeviceMotion.addListener((deviceMotionData) => {
-            let { alpha, beta, gamma } = deviceMotionData.rotation;
             
-            // Calculate colors and percentage
-            let red = getRed(gamma);
-            let green = getGreen(beta);
-            let blue = getBlue(alpha);
-            let percentage = getPercentage(this.props.randomColorR, this.props.randomColorG, this.props.randomColorB, red, green, blue);
-            
-            // Save the values
-            this.setState({
-                red: red,
-                green: green,
-                blue: blue,
-                percent: percentage,
-            });
-            
-            // Send the percentage value back to parent component
-            this.props.onPercentageChange(percentage);
+            // Wait for sensor data
+            if (!deviceMotionData.rotation) {
+                setTimeout((() => {
+                    this._subscribe();
+                }), 100);
+            } else {
+                let { alpha, beta, gamma } = deviceMotionData.rotation;
+
+                // Calculate colors and percentage
+                let red = getRed(gamma);
+                let green = getGreen(beta);
+                let blue = getBlue(alpha);
+                let percentage = getPercentage(this.props.randomColorR, this.props.randomColorG, this.props.randomColorB, red, green, blue);
+
+                // Save the values
+                this.setState({
+                    red: red,
+                    green: green,
+                    blue: blue,
+                    percent: percentage,
+                });
+
+                // Send the percentage value back to parent component
+                this.props.onPercentageChange(percentage);
+            }
         });
     }
     

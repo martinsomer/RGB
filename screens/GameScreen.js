@@ -13,6 +13,8 @@ export default class App extends React.Component {
             randomColor: null,
             currentColor: null,
             percent: null,
+            score : 0,
+           
         };
     }
     
@@ -33,6 +35,7 @@ export default class App extends React.Component {
             randomColorR: randomColorR,
             randomColorG: randomColorG,
             randomColorB: randomColorB,
+            
         });
     }
     
@@ -49,15 +52,22 @@ export default class App extends React.Component {
     
     // Get percentage value from DeviceMotionData component
     handlePercentageChange = (value) => {
-        if (value > 99) {
+        if (value > 80) {
             value -= 1;
+            /* this.setState({
+                score: + 1,
+                
+             }); */
+            this.state.score += 1
             this.playScoreSound();
             this.getRandomColor();
+            
         }
         
         // Save to state
         this.setState({
            percent: value,
+           
         });
     }
 
@@ -84,7 +94,7 @@ export default class App extends React.Component {
                     <TouchableOpacity style={styles.topRowButton} onPress={() => this.backButtonPressed()}>
                         <Image style={styles.topRowButtonImage} source={require('../images/back96.png')} />
                     </TouchableOpacity>
-                    <Text style={styles.topRowScore}>SCORE: 12</Text>
+                    <Text style={styles.topRowScore}>SCORE: {this.state.score}</Text>
                 </View>
             
                 <View style={[styles.generatedColor, {backgroundColor: this.state.randomColor}]}>

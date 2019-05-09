@@ -135,36 +135,35 @@ export default class App extends React.Component {
                     </TouchableOpacity>
                     <Text style={styles.topRowScore}>SCORE: {this.state.score}</Text>
                 </View>
-            
-                <View style={[styles.generatedColor, {backgroundColor: this.state.randomColor}]}>
-                    <Text>R: {this.state.randomColorR}</Text>
-                    <Text>G: {this.state.randomColorG}</Text>
-                    <Text>B: {this.state.randomColorB}</Text>
-                </View>
                 
-                <DeviceMotionData
-                    randomColorR={this.state.randomColorR}
-                    randomColorG={this.state.randomColorG}
-                    randomColorB={this.state.randomColorB}
-                    onPercentageChange= {this.handlePercentageChange}>
-                </DeviceMotionData>
-            
-                <View style={styles.percentageLayer}>
-                    <ProgressCircle
-                        percent={this.state.time*(100/60)}
-                        radius={50}
-                        borderWidth={6}
-                        color={this.timerStyle()}
-                        shadowColor="#fff"
-                        bgColor="#fff"
-                    >
-                        <Text style={styles.percentageText}>{ this.state.percent}%</Text>
-                    </ProgressCircle>
+                <View style={{flex: 0.95}}>
+                    <View style={[styles.generatedColor, {backgroundColor: this.state.randomColor}]}>
+                        <Text>R: {this.state.randomColorR}</Text>
+                        <Text>G: {this.state.randomColorG}</Text>
+                        <Text>B: {this.state.randomColorB}</Text>
+                    </View>
+
+                    <DeviceMotionData
+                        randomColorR={this.state.randomColorR}
+                        randomColorG={this.state.randomColorG}
+                        randomColorB={this.state.randomColorB}
+                        onPercentageChange= {this.handlePercentageChange}>
+                    </DeviceMotionData>
+
+                    <View style={styles.percentageLayer}>
+                        <ProgressCircle
+                            percent={this.state.time*(100/60)}
+                            radius={50}
+                            borderWidth={6}
+                            color={this.timerStyle()}
+                            shadowColor="#fff"
+                            bgColor="#fff"
+                        >
+                            <Text style={styles.percentageText}>{ this.state.percent}%</Text>
+                        </ProgressCircle>
+                    </View>
                 </View>
 
-                <View style={styles.bottomRow}>
-                    
-                </View>
             </View>
         );
     }
@@ -210,7 +209,7 @@ const styles = StyleSheet.create({
     },
     // Containing button to menu and score
     topRow: {
-        flex: .1,
+        flex: .05,
         flexDirection: 'row',
         borderColor: 'white',
         borderWidth: 6,

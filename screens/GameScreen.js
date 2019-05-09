@@ -1,7 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, TouchableOpacity, Image } from 'react-native';
-import { Audio } from 'expo';
+import { Audio, Svg } from 'expo';
 import DeviceMotionData from '../components/DeviceMotionData';
+import ProgressCircle from 'react-native-progress-circle'
+
 
 export default class App extends React.Component {
     
@@ -14,15 +16,36 @@ export default class App extends React.Component {
             currentColor: null,
             percent: null,
             score : 0,
-           
+            time : 60,
+            visibleModal : false,
+
         };
     }
-    
+
     // Get random color on app start
     componentDidMount() {
         this.getRandomColor();
+        this.interval = setInterval(
+            () => this.setState((prevState)=> ({ time: prevState.time - 1 })),
+            1000
+        );
     }
-    
+
+    // End game on timer end
+    componentDidUpdate(){
+        if (this.state.time === 0) {
+            clearInterval(this.interval);
+
+            this.props.navigation.navigate('MainMenu', {
+                score: this.state.score
+            });
+        }
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.interval);
+    }
+
     // Generate random color and save it in the state
     getRandomColor() {
         let randomColorR = Math.floor(Math.random() * (255 + 1))
@@ -52,13 +75,18 @@ export default class App extends React.Component {
     
     // Get percentage value from DeviceMotionData component
     handlePercentageChange = (value) => {
-        if (value > 80) {
+        if (value > 90) {
             value -= 1;
             /* this.setState({
                 score: + 1,
                 
              }); */
             this.state.score += 1
+            if (this.state.time >= 55) {
+                this.state.time = 60;
+            } else {
+                this.state.time += 5;
+            }
             this.playScoreSound();
             this.getRandomColor();
             
@@ -81,7 +109,18 @@ export default class App extends React.Component {
         }
         this.props.navigation.navigate('MainMenu');
     }
-    
+
+    timerStyle = function(options) {
+        let color;
+        if (this.state.time <= 60) color = "#339900"
+        if (this.state.time <= 48) color = "#99cc33"
+        if (this.state.time <= 36) color = "#ffcc00"
+        if (this.state.time <= 24) color = "#ff9966"
+        if (this.state.time <= 12) color = "#cc3300"
+        return color;
+     }
+
+
     // Render the app
     render() {
         return (
@@ -109,14 +148,18 @@ export default class App extends React.Component {
                     randomColorB={this.state.randomColorB}
                     onPercentageChange= {this.handlePercentageChange}>
                 </DeviceMotionData>
-                
             
                 <View style={styles.percentageLayer}>
-                    <View style={styles.percentageBox}>
-                        <Text style={styles.percentageText}>
-                            {this.state.percent}%
-                        </Text>
-                    </View>
+                    <ProgressCircle
+                        percent={this.state.time*(100/60)}
+                        radius={50}
+                        borderWidth={6}
+                        color={this.timerStyle()}
+                        shadowColor="#fff"
+                        bgColor="#fff"
+                    >
+                        <Text style={styles.percentageText}>{ this.state.percent}%</Text>
+                    </ProgressCircle>
                 </View>
 
                 <View style={styles.bottomRow}>
@@ -161,18 +204,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    // Box that contains the percentage text
-    percentageBox: {
-        width: 100,
-        height: 100,
-        backgroundColor: 'white',
-        borderRadius: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     // Text inside the percentage box
     percentageText: {
-        fontSize: 45,
+        fontSize: 42,
     },
     // Containing button to menu and score
     topRow: {

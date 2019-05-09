@@ -1,12 +1,24 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Button } from 'react-native';
 import { Audio } from 'expo';
+import Modal from 'react-native-modal';
+
 
 export default class MainMenuScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.audioPlayer = new Audio.Sound();
+    this.state = {
+      score: this.props.navigation.getParam('score', null),
+      showModal: false
+    }
+  }
+
+  componentDidMount() {
+    if(this.state.score !== null) {
+      this.setState({ showModal: true });
+    }
   }
 
   playButtonPressed = async () => {
@@ -20,9 +32,35 @@ export default class MainMenuScreen extends React.Component {
     this.props.navigation.navigate('Game');
   }
 
+  renderModalContent = () => (
+    <View style={styles.modal}>
+      <Text style={styles.modalTitle}>Game over!</Text>
+      <Text style={styles.modalContent}>Final score: {this.state.score}</Text>
+      <TouchableOpacity style={styles.modalButton}
+        onPress={() => {this.setState({ showModal: false });}}
+      >
+        <Text style={styles.modalButtonText}>Continue</Text>
+      </TouchableOpacity >
+    </View>
+  );
+
   render() {
     return (
       <View style={styles.container}>
+
+        <Modal
+          isVisible={this.state.showModal === true}
+          backdropColor="#B4B3DB"
+          backdropOpacity={0.95}
+          animationIn="zoomInDown"
+          animationOut="zoomOutUp"
+          animationInTiming={600}
+          animationOutTiming={600}
+          backdropTransitionInTiming={600}
+          backdropTransitionOutTiming={600}
+        >
+          {this.renderModalContent()}
+        </Modal>
 
         <View style={styles.imageSide}>
           <Image style={styles.image} source={require('../images/RGBlogo.png')} />
@@ -93,5 +131,43 @@ const styles = StyleSheet.create({
   buttonText: {
     fontWeight: 'bold',
     fontSize: 35
-  }
+  },
+  // Modal container
+  modal: {
+    fontWeight: 'bold',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 35,
+    flex: 1
+  },
+  // Modal title text
+  modalTitle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bold',
+    fontSize: 55,
+    marginBottom: 10
+  },
+  // Modal score text
+  modalContent: {
+    fontWeight: 'bold',
+    fontSize: 35,
+    marginBottom: 15
+  },
+  // Button in popup modal
+  modalButton: {
+    height: 'auto',
+    width: 'auto',
+    backgroundColor: '#DDDDDD',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#ccc',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  modalButtonText: {
+    fontWeight: 'bold',
+    fontSize: 25
+  },
 });

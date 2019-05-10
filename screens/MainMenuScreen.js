@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Button } from 'react-native';
 import { Audio } from 'expo';
 import Modal from 'react-native-modal';
+import { AsyncStorage } from "react-native"
 
 
 export default class MainMenuScreen extends React.Component {
@@ -11,19 +12,34 @@ export default class MainMenuScreen extends React.Component {
     this.audioPlayer = new Audio.Sound();
     this.state = {
       score: this.props.navigation.getParam('score', null),
-      showModal: false
-    }
+      showModal: false,
+      highScore: 0,
+    };
   }
 
   componentDidMount() {
     if(this.state.score !== null) {
-      this.setState({ showModal: true });
+      AsyncStorage.getItem('highScore').then(result => {
+        this.setState({highScore: parseInt(result) || 0});
+        this.save();
+        this.setState({ showModal: true});
+      }).catch(error => {
+        this.save();
+        this.setState({ showModal: true});
+      })
+    }
+  }
+
+  save = () => {
+    if(this.state.score > this.state.highScore) {
+      this.setState({highScore: this.state.score});
+      AsyncStorage.setItem('highScore', this.state.highScore.toString());
     }
   }
 
   playButtonPressed = async () => {
     try {
-        await this.audioPlayer.unloadAsync()
+        await this.audioPlayer.unloadAsync();
         await this.audioPlayer.loadAsync(require("../sounds/pop.mp3"));
         await this.audioPlayer.playAsync();
     } catch (err) {
@@ -36,6 +52,7 @@ export default class MainMenuScreen extends React.Component {
     <View style={styles.modal}>
       <Text style={styles.modalTitle}>Game over!</Text>
       <Text style={styles.modalContent}>Final score: {this.state.score}</Text>
+      <Text style={styles.modalContent}>High score: {this.state.highScore}</Text>
       <TouchableOpacity style={styles.modalButton}
         onPress={() => {this.setState({ showModal: false });}}
       >

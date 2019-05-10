@@ -75,7 +75,7 @@ export default class App extends React.Component {
     
     // Get percentage value from DeviceMotionData component
     handlePercentageChange = (value) => {
-        if (value > 90) {
+        if (value > 99) {
             value -= 1;
             /* this.setState({
                 score: + 1,
